@@ -1,0 +1,17 @@
+Django==4.1.7
+psycopg2==2.9.5
+djangorestframework==3.14.0
+django-filter==22.1
+elasticsearch-dsl==7.4.1
+django-elasticsearch-dsl==7.3
+django-elasticsearch-dsl-drf==0.22.5
+django-polymorphic==3.1
+django-rest-polymorphic==0.1.10
+pandas==1.5.3
+dask==2023.3.0
+django_import
+django-reset-migrations
+gunicorn
+pandas
+pyyaml
+django-cors-headers

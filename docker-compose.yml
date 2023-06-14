@@ -1,0 +1,126 @@
+# version: "3"
+
+# services:
+#   elasticsearch:
+#     image: blacktop/elasticsearch:latest
+#     expose:
+#       - 9200
+#     restart: "on-failure"
+#   db:
+#     image: postgres:latest
+#     expose: 
+#       - 5432
+#     environment: 
+#       POSTGRES_PASSWORD: example
+#     restart: "on-failure"
+#   django:
+#     image: django_app:latest
+#     build:
+#       context: .
+#       dockerfile: compose/django/Dockerfile
+#     command: >
+#       /bin/bash -c "
+#         while ! curl -X GET elasticsearch:9200/_cluster/health --silent;
+#         do
+#           sleep 1;
+#         done;
+#         python manage.py runserver 0.0.0.0:8000
+#       "
+#     volumes:
+#       - .:/code
+#     expose:
+#       - 8000
+#     restart: "on-failure"
+#     ports:
+#       - "8000:8000"
+#     depends_on:
+#       - db
+#       - elasticsearch
+
+# version: "4"
+
+# services:
+#   db22:
+#     container_name: postgres
+#     image: postgres:alpine
+#     restart: always
+#     environment:
+#       - POSTGRES_PASSWORD=postgres
+#       - POSTGRES_USER=postgres
+#       - POSTGRES_DB=postgres
+#     expose:
+#       - 5432
+#     ports:
+#       - "5432:5432"
+#     volumes:
+#       - postgres_data:/var/lib/postgresql/data/
+#   web22:
+#     container_name: django_server
+#     build:
+#       context: .
+#       dockerfile: compose/django/Dockerfile
+#     command: [python manage.py runserver 0.0.0.0:8000]
+#     restart: always
+#     volumes:
+#       - .:/code
+#     depends_on:
+#       - db22
+#       - elasticsearch8
+#   elasticsearch8:
+#     container_name: elasitcsearch
+#     image: elasticsearch:8.6.2
+#     environment:
+#       - discovery_type=single_node
+#     expose:
+#       - 9200
+#       - 9300
+#     ports:
+#       - "9200:9200"
+# volumes:
+#   postgres_data:
+# docker-compose.yml
+
+version: "3.8"
+
+services:
+
+  server:
+    build:
+      context: .
+      dockerfile: compose/django/Dockerfile
+    container_name: dj_server
+    depends_on:
+      - elasticsearch
+      - postgresql_db
+    command: [ "bash", "start.sh" ]
+    ports:
+      - 8000:8000
+    env_file: .env
+    volumes:
+      - .:/usr/src/app
+  elasticsearch:
+    image: elasticsearch:8.6.2
+    ports:
+      - ${ELK_PORT}:${ELK_PORT}
+      - 9300:9300
+    container_name: ${ELK_HOST}
+    restart: always
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    volumes:
+      - es_data:/usr/share/elasticsearch/data
+  postgresql_db:
+    image: postgres
+    ports:
+      - 5432:5432
+    restart: always
+    env_file: .env
+    container_name: ${POSTGRES_HOST}
+    volumes:
+      - perusable-database:/var/lib/postgresql/data
+volumes:
+  perusable-database:
+  es_data:
+    driver: local

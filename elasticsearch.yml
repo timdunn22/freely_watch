@@ -1,0 +1,7 @@
+elasticsearch:
+  environment:
+    - discovery.type=single-node
+    - discovery.seed_hosts=127.0.0.1:9200
+    - http.cors.enabled=true
+    - http.cors.allow-origin=http://localhost:3000
+    - http.cors.allow-origin=http://localhost:9200
