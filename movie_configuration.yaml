@@ -25,6 +25,9 @@ Links:
     All Links Path: /Users/timdunn/Desktop/links/all_links.csv
     Dubbed Path: /Users/timdunn/Desktop/links/dubbed.csv
     Links Unconverted Path: /Users/timdunn/okru_extra.csv
+Marketing:
+    Kftv Links: /Users/timdunn/Desktop/movie_production_companies.csv
+    Kftv Profiles: /Users/timdunn/Desktop/kftv_profiles.csv
 Scraper:
     Okru:
         Data Directory: /Users/timdunn/Desktop/okru_checkpoints/

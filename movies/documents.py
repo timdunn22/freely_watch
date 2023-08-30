@@ -36,6 +36,7 @@ class MovieDocument(Document):
     rating = fields.FloatField(attr='rating_value')
     videos = fields.ListField(fields.TextField())
     genres = fields.ListField(fields.KeywordField())
+    genre_ranking = fields.ObjectField(properties={"genre": fields.KeywordField(), "ranking": fields.IntegerField()})
     keywords = fields.ListField(fields.TextField())
     akas = fields.ListField(fields.TextField())
     akas_suggest = fields.ListField(fields.CompletionField(attr='get_akas'))
@@ -72,6 +73,10 @@ class MovieDocument(Document):
     
     def prepare_genres(self, instance):
         return [movie_genre.genre.name for movie_genre in instance.moviegenre_set.distinct('genre_id')]
+
+    def prepare_genre_ranking(self, instance):
+        return [{"genre": movie_genre.genre.name, "ranking": movie_genre.top_50_rank} 
+                for movie_genre in instance.moviegenre_set.distinct('genre_id')]
     
     def prepare_videos(self, instance):
         return [video.video_url for video in instance.movievideo_set.distinct('video_url')]
